@@ -36,51 +36,89 @@ source $HOME/.config/nvim/_machine_specific.vim
 " ==================== Editor behavior ====================
 "set clipboard=unnamedplus
 let &t_ut=''
+" 自动切换工作目录
 set autochdir
 set exrc
 set secure
+" 显示行号
 set number
+" 显示相对行号
 set relativenumber
+" 当前行高亮
 set cursorline
+" tab 不用空格代替
 set noexpandtab
+" tab 长度
 set tabstop=2
+" 缩进长度
 set shiftwidth=2
+" 缩进与tab不一致时空格补齐
 set softtabstop=2
+" 跟随上一行缩进方式
 set autoindent
+" 行尾空格用方块显示
 set list
 set listchars=tab:\|\ ,trail:▫
+" 光标距顶部、底部行数
 set scrolloff=4
+" 组合键等待延时
 set ttimeoutlen=0
 set notimeout
+" 指定 :mkview 保存的内容
 set viewoptions=cursor,folds,slash,unix
+" 行换行
 set wrap
+" 行多长时换行
 set tw=0
+" 得到一行的缩进位置的表达式
 set indentexpr=
+" 折叠的类型, indent 缩进折叠
 set foldmethod=indent
+" 当折叠级别高于此值时关闭折叠
 set foldlevel=99
+" 开启折叠功能
 set foldenable
+" 自动格式化的方式
 set formatoptions-=tc
+" 新窗口在当前窗口右边
 set splitright
+" 新窗口在当前窗口下边
 set splitbelow
+" 在状态栏上不显示当前模式的消息
 set noshowmode
+" 搜索忽略大小写
 set ignorecase
+" 模式中有大写字母时不忽略大小写
 set smartcase
+" 控制信息显示的种类和详细程度
 set shortmess+=c
+" 即时预览命令的效果
 set inccommand=split
+" 插入模式补全使用的选项
 set completeopt=longest,noinsert,menuone,noselect,preview
+" 执行宏时不重画
 set lazyredraw
+" 使用可视铃声而不是响铃
 set visualbell
 silent !mkdir -p $HOME/.config/nvim/tmp/backup
 silent !mkdir -p $HOME/.config/nvim/tmp/undo
 "silent !mkdir -p $HOME/.config/nvim/tmp/sessions
+" 备份文件使用的目录列表
 set backupdir=$HOME/.config/nvim/tmp/backup,.
+" 交换文件所用的目录名列表
 set directory=$HOME/.config/nvim/tmp/backup,.
+" 如果 persistent_undo 特性支持
 if has('persistent_undo')
+	" 把撤销信息写入一个文件里
 	set undofile
 	set undodir=$HOME/.config/nvim/tmp/undo,.
 endif
+" 高亮指定列
 set colorcolumn=100
+" 刷新交换文件所需的毫秒数
 set updatetime=100
+" 何时使用虚拟编辑
+" 允许光标出现在最后一个字符的后面
 set virtualedit=block
 
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -95,10 +133,14 @@ tnoremap <C-O> <C-\><C-N><C-O>
 
 " ==================== Basic Mappings ====================
 let mapleader=" "
+" ; 输入命令
 noremap ; :
+" Q 退出
 nnoremap Q :q<CR>
+" S 保存
 nnoremap S :w<CR>
 " Open the vimrc file anytime
+"  rc 快速打开 init.vim
 nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 nnoremap <LEADER>rv :e .nvimrc<CR>
 augroup NVIMRC
@@ -106,10 +148,10 @@ augroup NVIMRC
     autocmd BufWritePost *.nvimrc exec ":so %"
 augroup END
 " Undo operations
-noremap l u
+" noremap l u
 " Insert Key
-noremap k i
-noremap K I
+noremap h i
+noremap H I
 " Copy to system clipboard
 vnoremap Y "+y
 " Find pair
@@ -131,20 +173,21 @@ inoremap <c-y> <ESC>A {}<ESC>i<CR><ESC>ko
 " ==================== Cursor Movement ====================
 " New cursor movement (the default arrow keys are used for resizing windows)
 "     ^
-"     u
-" < n   i >
-"     e
+"     i
+" < j   l >
+"     k
 "     v
-noremap <silent> u k
-noremap <silent> n h
-noremap <silent> e j
-noremap <silent> i l
-noremap <silent> gu gk
-noremap <silent> ge gj
+noremap <silent> i k
+noremap <silent> j h
+noremap <silent> k j
+noremap <silent> l l
+noremap <silent> gi gk
+noremap <silent> gk gj
+" \v 选中到行尾
 noremap <silent> \v v$h
-" U/E keys for 5 times u/e (faster navigation)
-noremap <silent> U 5k
-noremap <silent> E 5j
+" I/K keys for 5 times u/e (faster navigation)
+noremap <silent> I 5k
+noremap <silent> K 5j
 " N key: go to the start of the line
 noremap <silent> N 0
 " I key: go to the end of the line
@@ -153,10 +196,10 @@ noremap <silent> I $
 noremap W 5w
 noremap B 5b
 " set h (same as n, cursor left) to 'end of word'
-noremap h e
+" noremap h e
 " Ctrl + U or E will move up/down the view port without moving the cursor
-noremap <C-U> 5<C-y>
-noremap <C-E> 5<C-e>
+noremap <C-I> 5<C-y>
+" noremap <C-K> 5<C-e>
 " Custom cursor movement
 source $HOME/.config/nvim/cursor.vim
 " If you use Qwerty keyboard, uncomment the next line.
@@ -181,23 +224,23 @@ cnoremap <M-w> <S-Right>
 " ==================== Window management ====================
 " Use <space> + new arrow keys for moving the cursor around windows
 noremap <LEADER>w <C-w>w
-noremap <LEADER>u <C-w>k
-noremap <LEADER>e <C-w>j
-noremap <LEADER>n <C-w>h
-noremap <LEADER>i <C-w>l
+noremap <LEADER>i <C-w>k
+noremap <LEADER>k <C-w>j
+noremap <LEADER>j <C-w>h
+noremap <LEADER>l <C-w>l
 noremap qf <C-w>o
 " Disable the default s key
 noremap s <nop>
 " split the screens to up (horizontal), down (horizontal), left (vertical), right (vertical)
-noremap su :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
-noremap se :set splitbelow<CR>:split<CR>
-noremap sn :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
-noremap si :set splitright<CR>:vsplit<CR>
+noremap si :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
+noremap sk :set splitbelow<CR>:split<CR>
+noremap sj :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
+noremap sl :set splitright<CR>:vsplit<CR>
 " Resize splits with arrow keys
-noremap <up> :res +5<CR>
-noremap <down> :res -5<CR>
-noremap <left> :vertical resize-5<CR>
-noremap <right> :vertical resize+5<CR>
+noremap <M-up> :res -5<CR>
+noremap <M-down> :res +5<CR>
+noremap <M-left> :vertical resize-5<CR>
+noremap <M-right> :vertical resize+5<CR>
 " Place the two screens up and down
 noremap sh <C-w>t<C-w>K
 " Place the two screens side by side
@@ -214,11 +257,11 @@ noremap <LEADER>q <C-w>j:q<CR>
 noremap tu :tabe<CR>
 noremap tU :tab split<CR>
 " Move around tabs with tn and ti
-noremap tn :-tabnext<CR>
-noremap ti :+tabnext<CR>
+noremap tj :-tabnext<CR>
+noremap tl :+tabnext<CR>
 " Move the tabs with tmn and tmi
-noremap tmn :-tabmove<CR>
-noremap tmi :+tabmove<CR>
+noremap tmj :-tabmove<CR>
+noremap tml :+tabmove<CR>
 
 
 " ==================== Markdown Settings ====================
@@ -544,7 +587,6 @@ let g:coc_global_extensions = [
 	\ 'coc-sourcekit',
 	\ 'coc-stylelint',
 	\ 'coc-syntax',
-	\ 'https://github.com/theniceboy/coc-tailwindcss',
 	\ 'coc-tasks',
 	\ 'coc-translator',
 	\ 'coc-tsserver',
@@ -946,7 +988,7 @@ let g:move_key_modifier = 'C'
 
 
 " ==================== any-jump ====================
-nnoremap j :AnyJump<CR>
+nnoremap <LEADER>n :AnyJump<CR>
 let g:any_jump_window_width_ratio  = 0.8
 let g:any_jump_window_height_ratio = 0.9
 
@@ -1019,7 +1061,7 @@ noremap <silent> <C-q> :FzfLua builtin<CR>
 noremap <silent> <C-t> :FzfLua lines<CR>
 " noremap <silent> <C-x> :FzfLua resume<CR>
 noremap <silent> z= :FzfLua spell_suggest<CR>
-noremap <silent> <C-w> :FzfLua buffers<CR>
+" noremap <silent> <C-w> :FzfLua buffers<CR>
 noremap <leader>; :History:<CR>
 augroup fzf_commands
   autocmd!
