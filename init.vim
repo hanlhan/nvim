@@ -189,9 +189,9 @@ noremap <silent> \v v$h
 noremap <silent> I 5k
 noremap <silent> K 5j
 " N key: go to the start of the line
-noremap <silent> N 0
+noremap <silent> J 0
 " I key: go to the end of the line
-noremap <silent> I $
+noremap <silent> L $
 " Faster in-line navigation
 noremap W 5w
 noremap B 5b
@@ -199,7 +199,7 @@ noremap B 5b
 " noremap h e
 " Ctrl + U or E will move up/down the view port without moving the cursor
 noremap <C-I> 5<C-y>
-" noremap <C-K> 5<C-e>
+noremap <C-M> 5<C-e>
 " Custom cursor movement
 source $HOME/.config/nvim/cursor.vim
 " If you use Qwerty keyboard, uncomment the next line.
@@ -208,6 +208,12 @@ source $HOME/.config/nvim/cursor.vim
 
 " ==================== Insert Mode Cursor Movement ====================
 inoremap <C-a> <ESC>A
+inoremap <M-i> <Up>
+inoremap <M-k> <Down>
+inoremap <M-j> <Left>
+inoremap <M-l> <Right>
+
+" inoremap <C-l> <ESC>A
 
 
 " ==================== Command Mode Cursor Movement ====================
@@ -620,7 +626,7 @@ nnoremap <LEADER>h :call Show_documentation()<CR>
 " let $NVIM_COC_LOG_LEVEL = 'debug'
 " let $NVIM_COC_LOG_FILE = '/Users/david/Desktop/log.txt'
 
-nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
+" nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
 nnoremap <c-c> :CocCommand<CR>
@@ -720,7 +726,7 @@ let g:wildfire_objects = {
 
 
 " ==================== Undotree ====================
-noremap L :UndotreeToggle<CR>
+noremap M :UndotreeToggle<CR>
 let g:undotree_DiffAutoOpen = 1
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_ShortIndicators = 1
@@ -740,16 +746,16 @@ endfunc
 "let g:VM_default_mappings = 0
 let g:VM_leader                     = {'default': ',', 'visual': ',', 'buffer': ','}
 let g:VM_maps                       = {}
-let g:VM_custom_motions             = {'n': 'h', 'i': 'l', 'u': 'k', 'e': 'j', 'N': '0', 'I': '$', 'h': 'e'}
-let g:VM_maps['i']                  = 'k'
-let g:VM_maps['I']                  = 'K'
+let g:VM_custom_motions             = {'j': 'h', 'l': 'l', 'i': 'k', 'k': 'j', 'J': '0', 'L': '$', 'e': 'e'}
+let g:VM_maps['i']                  = 'h'
+let g:VM_maps['I']                  = 'h'
 let g:VM_maps['Find Under']         = '<C-k>'
 let g:VM_maps['Find Subword Under'] = '<C-k>'
 let g:VM_maps['Find Next']          = ''
 let g:VM_maps['Find Prev']          = ''
 let g:VM_maps['Remove Region']      = 'q'
 let g:VM_maps['Skip Region']        = '<c-n>'
-let g:VM_maps["Undo"]               = 'l'
+let g:VM_maps["Undo"]               = 'u'
 let g:VM_maps["Redo"]               = '<C-r>'
 
 
@@ -1054,11 +1060,11 @@ noremap g# g#<Cmd>lua require('hlslens').start()<CR>
 
 
 " ==================== fzf-lua ====================
-noremap <silent> <C-p> :FzfLua files<CR>
-noremap <silent> <C-f> :Rg<CR>
-noremap <silent> <C-h> :FzfLua oldfiles cwd=~<CR>
-noremap <silent> <C-q> :FzfLua builtin<CR>
-noremap <silent> <C-t> :FzfLua lines<CR>
+noremap  <C-p> :FzfLua files<CR>
+noremap  <C-f> :Rg<CR>
+noremap  <C-h> :FzfLua oldfiles cwd=~<CR>
+noremap  <C-q> :FzfLua builtin<CR>
+noremap  <C-t> :FzfLua lines<CR>
 " noremap <silent> <C-x> :FzfLua resume<CR>
 noremap <silent> z= :FzfLua spell_suggest<CR>
 " noremap <silent> <C-w> :FzfLua buffers<CR>
@@ -1084,6 +1090,7 @@ require'fzf-lua'.setup {
 		horizontal     = 'right:60%',     -- right|left:size
 		hidden         = 'nohidden',
 		title = true,
+		hl = { border = "FloatBorder", },
 	},
 	keymap = {
 		-- These override the default tables completely
@@ -1109,8 +1116,8 @@ require'fzf-lua'.setup {
 			["f4"]         = "toggle-preview",
 			["shift-down"] = "preview-page-down",
 			["shift-up"]   = "preview-page-up",
-			["ctrl-e"]     = "down",
-			["ctrl-u"]     = "up",
+			["ctrl-k"]     = "down",
+			["ctrl-i"]     = "up",
 		},
 	},
   previewers = {
