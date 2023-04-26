@@ -85,7 +85,9 @@
 		"cpp",
 		"cs",
 		"racket",
-		"prisma"
+		"prisma",
+		"dart",
+		"terraform"
 	],
 	"yaml.format.enable": true,
 	"signature.target": "float",
@@ -160,6 +162,7 @@
 	"flutter.openDevLogSplitCommand": "botright 12split",
 	"flutter.lsp.initialization.onlyAnalyzeProjectsWithOpenFiles": false,
 	"flutter.trace.server": "off",
+	"dart.lineLength": 100,
 	"tslint.autoFixOnSave": false,
 	"python.autoComplete.addBrackets": true,
 	"python.jediEnabled": false,
@@ -230,6 +233,13 @@
 			"command": "racket",
 			"args": ["--lib", "racket-langserver"],
 			"filetypes": ["scheme", "racket"]
+		},
+		"terraform": {
+			"command": "terraform-ls",
+			"args": ["serve"],
+			"filetypes": ["terraform", "tf"],
+			"initializationOptions": {},
+			"settings": {}
 		},
 		"ccls": {
 			"command": "ccls",

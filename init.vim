@@ -298,11 +298,11 @@ noremap \s :%s//g<left><left>
 " set wrap
 noremap <LEADER>sw :set wrap<CR>
 " press f10 to show hlgroup
-function! SynGroup()
-	let l:s = synID(line('.'), col('.'), 1)
-	echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
-endfun
-map <F10> :call SynGroup()<CR>
+" function! SynGroup()
+" 	let l:s = synID(line('.'), col('.'), 1)
+" 	echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+" endfun
+map <F10> :TSHighlightCapturesUnderCursor<CR>
 
 " Compile function
 noremap r :call CompileRunGcc()<CR>
@@ -366,6 +366,8 @@ endfunc
 " ==================== Install Plugins with Vim-Plug ====================
 call plug#begin('$HOME/.config/nvim/plugged')
 
+Plug 'itchyny/vim-cursorword'
+
 " Github Copilot
 Plug 'github/copilot.vim'
 
@@ -381,7 +383,7 @@ Plug 'theniceboy/nvim-deus'
 Plug 'theniceboy/eleline.vim', { 'branch': 'no-scrollbar' }
 
 " General Highlighter
-Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'NvChad/nvim-colorizer.lua'
 Plug 'RRethy/vim-illuminate'
 
 " File navigation
@@ -396,7 +398,7 @@ Plug 'pechorin/any-jump.vim'
 " Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
 
 " Auto Complete
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'commit': '63dd239bfe02998810b39d039827e2510885b57b', 'do': 'yarn install --frozen-lockfile' }
 " Plug 'neoclide/coc.nvim', {'branch': 'release', 'tag': 'v0.0.79'}
 Plug 'wellle/tmux-complete.vim'
 
@@ -411,7 +413,7 @@ Plug 'mbbill/undotree'
 Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
 Plug 'theniceboy/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
 "Plug 'mhinz/vim-signify'
-Plug 'airblade/vim-gitgutter'
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'cohama/agit.vim'
 Plug 'kdheepak/lazygit.nvim'
 
@@ -457,8 +459,8 @@ Plug 'tweekmonster/braceless.vim', { 'for' :['python', 'vim-plug'] }
 "Plug 'plytophogy/vim-virtualenv', { 'for' :['python', 'vim-plug'] }
 "Plug 'tmhedberg/SimpylFold', { 'for' :['python', 'vim-plug'] }
 
-" Flutter
-Plug 'dart-lang/dart-vim-plugin'
+" Dart
+Plug 'dart-lang/dart-vim-plugin', { 'for': ['dart', 'vim-plug'] }
 
 " Swift
 Plug 'keith/swift.vim'
@@ -473,6 +475,7 @@ Plug 'dkarter/bullets.vim'
 " Other filetypes
 Plug 'wlangstroth/vim-racket'
 " Plug 'jceb/vim-orgmode', {'for': ['vim-plug', 'org']}
+Plug 'hashivim/vim-terraform'
 
 " Editor Enhancement
 Plug 'petertriho/nvim-scrollbar'
@@ -481,7 +484,7 @@ Plug 'ggandor/lightspeed.nvim'
 "Plug 'Raimondi/delimitMate'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mg979/vim-visual-multi'
-Plug 'tomtom/tcomment_vim' " in <space>cn to comment a line
+Plug 'theniceboy/tcomment_vim' " in <space>cn to comment a line
 Plug 'theniceboy/antovim' " gs to switch
 Plug 'tpope/vim-surround' " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word`
 Plug 'gcmt/wildfire.vim' " in Visual mode, type k' to select all text in '', or type k) k] k} kp
@@ -553,21 +556,24 @@ hi NonText ctermfg=gray guifg=grey10
 let g:airline_powerline_fonts = 0
 
 
-" ==================== GitGutter ====================
-" let g:gitgutter_signs = 0
-let g:gitgutter_sign_allow_clobber = 0
-let g:gitgutter_map_keys = 0
-let g:gitgutter_override_sign_column_highlight = 0
-let g:gitgutter_preview_win_floating = 1
-let g:gitgutter_sign_added = '▎'
-let g:gitgutter_sign_modified = '░'
-let g:gitgutter_sign_removed = '▏'
-let g:gitgutter_sign_removed_first_line = '▔'
-let g:gitgutter_sign_modified_removed = '▒'
-nnoremap <LEADER>gf :GitGutterFold<CR>
-nnoremap H :GitGutterPreviewHunk<CR>
-nnoremap <LEADER>g- :GitGutterPrevHunk<CR>
-nnoremap <LEADER>g= :GitGutterNextHunk<CR>
+" ==================== gitsigns.nvim ====================
+lua <<EOF
+require('gitsigns').setup({
+	signs = {
+    add          = { hl = 'GitSignsAdd'   , text = '▎', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'    },
+    change       = { hl = 'GitSignsChange', text = '░', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
+    delete       = { hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
+    topdelete    = { hl = 'GitSignsDelete', text = '▔', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
+    changedelete = { hl = 'GitSignsChange', text = '▒', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
+    untracked    = { hl = 'GitSignsAdd'   , text = '┆', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'    },
+  },
+})
+EOF
+nnoremap H :Gitsigns preview_hunk_inline<CR>
+nnoremap <LEADER>gr :Gitsigns reset_hunk<CR>
+nnoremap <LEADER>gb :Gitsigns blame_line<CR>
+nnoremap <LEADER>g- :Gitsigns prev_hunk<CR>
+nnoremap <LEADER>g= :Gitsigns next_hunk<CR>
 
 
 " ==================== coc.nvim ====================
@@ -601,14 +607,19 @@ let g:coc_global_extensions = [
 	\ 'coc-yaml',
 	\ 'coc-yank']
 inoremap <silent><expr> <TAB>
-	\ pumvisible() ? "\<C-n>" :
-	\ <SID>check_back_space() ? "\<TAB>" :
-	\ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-function! s:check_back_space() abort
-	let col = col('.') - 1
-	return !col || getline('.')[col - 1]  =~# '\s'
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <c-o> coc#refresh()
@@ -974,12 +985,6 @@ noremap gp :AsyncRun git push<CR>
 let g:asyncrun_open = 6
 
 
-" ==================== dart-vim-plugin ====================
-let g:dart_style_guide = 2
-let g:dart_format_on_save = 1
-let g:dartfmt_options = ["-l 100"]
-
-
 " ==================== tcomment_vim ====================
 nnoremap ci cl
 let g:tcomment_textobject_inlinecomment = ''
@@ -1040,7 +1045,10 @@ require("scrollbar").setup({
 		Misc = { color = "purple" },
 	},
 	handlers = {
+		cursor = true,
 		diagnostic = true,
+		gitsigns = true,
+		handle = true,
 		search = true,
 	},
 })
@@ -1216,6 +1224,51 @@ require'lightspeed'.setup {
 }
 EOF
 endif
+
+" ==================== copilot.nvim ====================
+let g:copilot_enabled = 1
+nnoremap <silent> <leader>go :Copilot<CR>
+nnoremap <silent> <leader>ge :Copilot enable<CR>
+nnoremap <silent> <leader>gd :Copilot disable<CR>
+" inoremap <c-p> <Plug>(copilot-suggest)
+imap <silent><script><expr> <C-C> copilot#Accept("")
+let g:copilot_no_tab_map = v:true
+inoremap <c-n> <Plug>(copilot-next)
+inoremap <c-l> <Plug>(copilot-previous)
+
+
+" ==================== nvim-colorizer.lua ====================
+lua <<EOF
+require("colorizer").setup {
+	filetypes = { "*" },
+	user_default_options = {
+		RGB = true, -- #RGB hex codes
+		RRGGBB = true, -- #RRGGBB hex codes
+		names = true, -- "Name" codes like Blue or blue
+		RRGGBBAA = false, -- #RRGGBBAA hex codes
+		AARRGGBB = true, -- 0xAARRGGBB hex codes
+		rgb_fn = false, -- CSS rgb() and rgba() functions
+		hsl_fn = false, -- CSS hsl() and hsla() functions
+		css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+		css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+		-- Available modes for `mode`: foreground, background,  virtualtext
+		mode = "virtualtext", -- Set the display mode.
+		-- Available methods are false / true / "normal" / "lsp" / "both"
+		-- True is same as normal
+		tailwind = false, -- Enable tailwind colors
+		-- parsers can contain values used in |user_default_options|
+		sass = { enable = false, parsers = { css }, }, -- Enable sass colors
+		virtualtext = "■",
+	},
+	-- all the sub-options of filetypes apply to buftypes
+	buftypes = {},
+}
+EOF
+
+
+" ==================== dart-vim-plugin ====================
+let g:dart_corelib_highlight = v:false
+let g:dart_format_on_save = v:false
 
 
 " ==================== Terminal Colors ====================

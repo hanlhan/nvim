@@ -23,6 +23,13 @@ for i := 0; i < n; i++ {
 }
 endsnippet
 
+snippet re "Return Error if any"
+if err != nil {
+	return err
+}
+${0}
+endsnippet
+
 snippet ie "Check Error"
 if err != nil {
 	panic(err)
@@ -72,3 +79,6 @@ snippet cq "Current Question"
 app.result.questions[app.curResultIndex]${0}
 endsnippet
 
+snippet fa "fix add type"
+// FIX:ADDTYPE
+endsnippet
