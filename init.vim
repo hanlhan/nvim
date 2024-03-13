@@ -13,6 +13,8 @@
 
 
 " ==================== Auto load for first time uses ====================
+" 首次使用时配置nvim，安装插件
+" 安装plug.vim
 if empty(glob($HOME.'/.config/nvim/autoload/plug.vim'))
 	silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs
 				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -25,7 +27,8 @@ if empty(glob($HOME.'/.config/nvim/plugged/wildfire.vim/autoload/wildfire.vim'))
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" Create a _machine_specific.vim file to adjust machine specific stuff, like python interpreter location 
+" Create a _machine_specific.vim file to adjust machine specific stuff, like python interpreter location
+" 创建特殊文件用来配置每台机器不同的配置，如python位置
 let has_machine_specific_file = 1
 if empty(glob('~/.config/nvim/_machine_specific.vim'))
 	let has_machine_specific_file = 0
@@ -34,17 +37,20 @@ endif
 source $HOME/.config/nvim/_machine_specific.vim
 
 " ==================== Editor behavior ====================
-"set clipboard=unnamedplus
+" 设置系统剪贴板
+set clipboard=unnamedplus
 let &t_ut=''
 " 自动切换工作目录
 set autochdir
+" 允许读取.exrc和.vimrc文件配置
 set exrc
+" 使vim在使用者的权限内执行
 set secure
 " 显示行号
 set number
 " 显示相对行号
 set relativenumber
-" 当前行高亮
+" 当前行下划线
 set cursorline
 " tab 不用空格代替
 set noexpandtab
@@ -63,14 +69,17 @@ set listchars=tab:\|\ ,trail:▫
 set scrolloff=4
 " 组合键等待延时
 set ttimeoutlen=0
+" 不等待按键到超时
 set notimeout
 " 指定 :mkview 保存的内容
+" 表示当保存视图时，会包括光标位置、折叠信息以及编辑器选项的信息。
 set viewoptions=cursor,folds,slash,unix
-" 行换行
+" 换行
 set wrap
 " 行多长时换行
 set tw=0
 " 得到一行的缩进位置的表达式
+" 使用默认的缩进规则
 set indentexpr=
 " 折叠的类型, indent 缩进折叠
 set foldmethod=indent
@@ -93,13 +102,20 @@ set smartcase
 " 控制信息显示的种类和详细程度
 set shortmess+=c
 " 即时预览命令的效果
+" 将实时显示命令的效果，并在窗口中进行分割以预览命令的结果
 set inccommand=split
 " 插入模式补全使用的选项
+" longest: 自动补全时，根据可能匹配的最长部分进行补全。
+" noinsert: 不要在执行自动补全后插入空白字符或选择第一个匹配项。
+" menuone: 如果有多个匹配项，只显示一个完整匹配列表。
+" noselect: 不要自动选择第一个匹配项。
+" preview: 在底部显示预览窗口来显示可能的自动补全结果。
 set completeopt=longest,noinsert,menuone,noselect,preview
 " 执行宏时不重画
 set lazyredraw
 " 使用可视铃声而不是响铃
 set visualbell
+" 用于保存文件编辑历史
 silent !mkdir -p $HOME/.config/nvim/tmp/backup
 silent !mkdir -p $HOME/.config/nvim/tmp/undo
 "silent !mkdir -p $HOME/.config/nvim/tmp/sessions
@@ -113,6 +129,7 @@ if has('persistent_undo')
 	set undofile
 	set undodir=$HOME/.config/nvim/tmp/undo,.
 endif
+
 " 高亮指定列
 set colorcolumn=100
 " 刷新交换文件所需的毫秒数
@@ -121,17 +138,24 @@ set updatetime=100
 " 允许光标出现在最后一个字符的后面
 set virtualedit=block
 
+" 使光标在普通模式下和插入模式下样式不同
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 
 " ==================== Terminal Behaviors ====================
+" 在 Neovim 中，这个变量控制着 NeoTerm 插件的自动滚动行为。
+" 当将其设置为1时，NeoTerm 在执行命令后会自动滚动到最新的输出行，以确保用户能够看到最近的终端输出信息。
 let g:neoterm_autoscroll = 1
+" 当打开新的终端时，会自动将光标放在终端中并进入插入模式
 autocmd TermOpen term://* startinsert
+" 终端模式下 Ctrl+N退出终端
 tnoremap <C-N> <C-\><C-N>
+" 终端模式下 Ctrl+N退出终端并返回上一个位置
 tnoremap <C-O> <C-\><C-N><C-O>
 
 
 " ==================== Basic Mappings ====================
+" 将空格设为超级按键
 let mapleader=" "
 " ; 输入命令
 noremap ; :
@@ -140,7 +164,7 @@ nnoremap Q :q<CR>
 " S 保存
 nnoremap S :w<CR>
 " Open the vimrc file anytime
-"  rc 快速打开 init.vim
+" 空格 + rc 快速打开 init.vim
 nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 nnoremap <LEADER>rv :e .nvimrc<CR>
 augroup NVIMRC
@@ -152,22 +176,24 @@ augroup END
 " Insert Key
 noremap h i
 noremap H I
-" Copy to system clipboard
+" Y 复制到系统粘贴板
 vnoremap Y "+y
-" Find pair
+" ,. 寻找对应的括号
 noremap ,. %
+" 可视模式下 使光标移动到当前选中文本的结尾，并跳转到匹配的括号、花括号或方括号的对应位置
 vnoremap ki $%
-" Search
+" 空格+Enter取消搜索高亮
 noremap <LEADER><CR> :nohlsearch<CR>
-" Adjacent duplicate words
+" 空格+dw 匹配当前单词并在文件中继续寻找下一个相同的单词，并高亮显示
 noremap <LEADER>dw /\(\<\w\+\>\)\_s*\1
-" Space to Tab
+" 普通模式下按下 <Leader>tt 将会执行全局替换操作，将连续四个空格替换为一个制表符（tab）
 nnoremap <LEADER>tt :%s/    /\t/g
 vnoremap <LEADER>tt :s/    /\t/g
-" Folding
+" 空格+o 折叠
 noremap <silent> <LEADER>o za
 
 " insert a pair of {} and go to the next line
+" 快速 插入{} 并中间插入一行
 inoremap <c-y> <ESC>A {}<ESC>i<CR><ESC>ko
 
 " ==================== Cursor Movement ====================
@@ -292,7 +318,7 @@ noremap <C-c> zz
 " Auto change directory to current dir
 autocmd BufEnter * silent! lcd %:p:h
 " Call figlet
-noremap tx :r !figlet 
+noremap tx :r !figlet
 " find and replace
 noremap \s :%s//g<left><left>
 " set wrap
