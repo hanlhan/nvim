@@ -206,26 +206,26 @@ inoremap <c-y> <ESC>A {}<ESC>i<CR><ESC>ko
 noremap <silent> i k
 noremap <silent> j h
 noremap <silent> k j
-noremap <silent> l l
+" noremap <silent> l l
 noremap <silent> gi gk
 noremap <silent> gk gj
 " \v 选中到行尾
 noremap <silent> \v v$h
-" I/K keys for 5 times u/e (faster navigation)
+" I/K 向上/下移动5行
 noremap <silent> I 5k
 noremap <silent> K 5j
-" N key: go to the start of the line
+" J 行首
 noremap <silent> J 0
-" I key: go to the end of the line
+" L 行尾
 noremap <silent> L $
-" Faster in-line navigation
+" W/B 向前/后移动5个单词
 noremap W 5w
 noremap B 5b
 " set h (same as n, cursor left) to 'end of word'
 " noremap h e
-" Ctrl + U or E will move up/down the view port without moving the cursor
+" Ctrl + I / K 屏幕向上/下移动5行，光标不变
 noremap <C-I> 5<C-y>
-noremap <C-M> 5<C-e>
+noremap <C-K> 5<C-e>
 " Custom cursor movement
 source $HOME/.config/nvim/cursor.vim
 " If you use Qwerty keyboard, uncomment the next line.
@@ -233,6 +233,9 @@ source $HOME/.config/nvim/cursor.vim
 
 
 " ==================== Insert Mode Cursor Movement ====================
+" 插入模式下
+" Ctrl + a 移动光标到行尾
+" Alt + i/k/j/l 光标上下左右移动
 inoremap <C-a> <ESC>A
 inoremap <M-i> <Up>
 inoremap <M-k> <Down>
